@@ -19,7 +19,7 @@ namespace JacobianComparisonLib
         public double AvgDifference { get; protected set; } = 0.0;
         public int DifferenceViolationCount { get; protected set; } = 0;
         public int NumberComparisonCount { get; protected set; } = 0;
-        public List<(int, int)> DifferenceViolations { get; protected set; } = new List<(int, int)>();
+        public List<Tuple<int, int>> DifferenceViolations { get; protected set; } = new List<Tuple<int, int>>();
         public string Error { get; protected set; } = "";
 
         public JacobianComparison(double tolerance)
@@ -45,7 +45,7 @@ namespace JacobianComparisonLib
             if (!(diff <= this.Tolerance))
             {
                 this.DifferenceViolationCount++;
-                this.DifferenceViolations.Add((posX, posY));
+                this.DifferenceViolations.Add(Tuple.Create(posX, posY));
             }
             this.MaxDifference = Math.Max(this.MaxDifference, diff);
             ++this.NumberComparisonCount;
@@ -161,7 +161,7 @@ namespace JacobianComparisonLib
 
         public string ToTabSeparatedString()
         {
-            return $"{this.File1}\t{this.File2}\t{this.Tolerance}\t{this.DimensionMismatch}\t{this.ParseError}\t{this.MaxDifference}\t{this.AvgDifference}\t{this.DifferenceViolationCount}\t{this.NumberComparisonCount}\t{string.Join(" ", this.DifferenceViolations.Take(10))}\t{this.Error}";
+            return $"{this.File1}\t{this.File2}\t{this.Tolerance}\t{this.DimensionMismatch}\t{this.ParseError}\t{this.MaxDifference}\t{this.AvgDifference}\t{this.DifferenceViolationCount}\t{this.NumberComparisonCount}\t{string.Join(" ", this.DifferenceViolations.Take(10).Select(t => $"({t.Item1}, {t.Item2})"))}\t{this.Error}";
         }
 
         public string ToJsonString()

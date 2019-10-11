@@ -1,4 +1,4 @@
-﻿using System;
+﻿using System.Linq;
 using Xunit;
 using JacobianComparisonLib;
 
@@ -110,9 +110,9 @@ namespace JacobianComparisonLibTests
             Assert.Equal(15, comparer.NumberComparisonCount);
             Assert.NotEmpty(comparer.DifferenceViolations);
             for (int i = 0; i < 15; i += 2)
-                Assert.Contains((0, i), comparer.DifferenceViolations);
+                Assert.Contains(comparer.DifferenceViolations, t => t.Item1 == 0 && t.Item2 == i);
             for (int i = 1; i < 15; i += 2)
-                Assert.DoesNotContain((0, i), comparer.DifferenceViolations);
+                Assert.DoesNotContain(comparer.DifferenceViolations, t => t.Item1 == 0 && t.Item2 == i);
         }
 
         [Theory]
@@ -176,7 +176,7 @@ namespace JacobianComparisonLibTests
             Assert.Equal(15, comparer.NumberComparisonCount);
             Assert.NotEmpty(comparer.DifferenceViolations);
             var expectedViolations = new[] { (0, 0), (1, 1), (3, 1), (0, 2), (2, 2), (0, 3), (2, 3), (4, 3) };
-            Assert.Equal(expectedViolations, comparer.DifferenceViolations);
+            Assert.Equal(expectedViolations, comparer.DifferenceViolations.Select(t => (t.Item1, t.Item2)).ToArray());
         }
     }
 }
